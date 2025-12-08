@@ -1,7 +1,7 @@
 import express from "express";
-import prisma from "../lib/prisma.js"
-import { generateArticle } from "../services/aiClient.js";
+import prisma from "../lib/prisma.js";
 import { authRequired } from "../middleware/authMiddleware.js";
+import { createArticle } from "../controllers/articleController.js";
 
 const router = express.Router();
 
@@ -25,17 +25,6 @@ router.get("/:id", async (req, res) => {
 });
 
 // POST /articles/generate (protegida con login)
-router.post("/generate", authRequired, async (req, res) => {
-    const generated = await generateArticle();
-
-    const article = await prisma.article.create({
-        data: {
-            title: generated.title,
-            content: generated.content
-        }
-    });
-
-    res.json(article);
-});
+router.post("/generate", authRequired, createArticle);
 
 export default router;

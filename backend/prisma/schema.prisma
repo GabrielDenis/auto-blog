@@ -18,5 +18,7 @@ model Article {
   id        Int      @id @default(autoincrement())
   title     String
   content   String
+  topic     String
+  published Boolean  @default(false)
   createdAt DateTime @default(now())
 }
