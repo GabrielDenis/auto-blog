@@ -1,8 +1,8 @@
 import prisma from "../lib/prisma.js"
-import { generateArticleHF } from "./hfGenerator.js"
+import { generateArticleOpenRouter } from "./openRouterGenerator.js"
 
 export async function createNewArticle(topic) {
-    const { title, content } = await generateArticleHF(topic)
+    const { title, content } = await generateArticleOpenRouter(topic)
 
     const article = await prisma.article.create({
         data: {
