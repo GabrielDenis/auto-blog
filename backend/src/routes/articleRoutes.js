@@ -24,7 +24,7 @@ router.get("/:id", async (req, res) => {
     res.json(article);
 });
 
-// POST /articles/generate (protegida con login)
-router.post("/generate", authRequired, createArticle);
+// POST /articles/generate (Open for challenge demo)
+router.post("/generate", createArticle);
 
 export default router;

@@ -17,4 +17,9 @@ export const getArticle = async (id) => {
     return response.data;
 };
 
+export const generateArticle = async (topic) => {
+    const response = await apiClient.post("/articles/generate", { topic });
+    return response.data;
+};
+
 export default apiClient;
