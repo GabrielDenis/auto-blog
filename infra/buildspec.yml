@@ -5,7 +5,8 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
-      - REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME
+      - REPOSITORY_URI_BACKEND=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/${IMAGE_REPO_NAME}-backend
+      - REPOSITORY_URI_FRONTEND=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/${IMAGE_REPO_NAME}-frontend
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=${COMMIT_HASH:=latest}
   build:
@@ -13,18 +14,18 @@ phases:
       - echo Build started on `date`
       - echo Building the Docker images...
       - docker-compose -f infra/docker-compose.yml build
-      - docker tag autoblog-backend:latest $REPOSITORY_URI:backend-$IMAGE_TAG
-      - docker tag autoblog-frontend:latest $REPOSITORY_URI:frontend-$IMAGE_TAG
-      - docker tag autoblog-backend:latest $REPOSITORY_URI:backend-latest
-      - docker tag autoblog-frontend:latest $REPOSITORY_URI:frontend-latest
+      - docker tag autoblog-backend:latest $REPOSITORY_URI_BACKEND:$IMAGE_TAG
+      - docker tag autoblog-backend:latest $REPOSITORY_URI_BACKEND:latest
+      - docker tag autoblog-frontend:latest $REPOSITORY_URI_FRONTEND:$IMAGE_TAG
+      - docker tag autoblog-frontend:latest $REPOSITORY_URI_FRONTEND:latest
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker images...
-      - docker push $REPOSITORY_URI:backend-$IMAGE_TAG
-      - docker push $REPOSITORY_URI:frontend-$IMAGE_TAG
-      - docker push $REPOSITORY_URI:backend-latest
-      - docker push $REPOSITORY_URI:frontend-latest
+      - docker push $REPOSITORY_URI_BACKEND:$IMAGE_TAG
+      - docker push $REPOSITORY_URI_BACKEND:latest
+      - docker push $REPOSITORY_URI_FRONTEND:$IMAGE_TAG
+      - docker push $REPOSITORY_URI_FRONTEND:latest
       - echo Writing image definitions file...
       - printf '[{"name":"backend","imageUri":"%s"},{"name":"frontend","imageUri":"%s"}]' $REPOSITORY_URI:backend-$IMAGE_TAG $REPOSITORY_URI:frontend-$IMAGE_TAG > imagedefinitions.json
 artifacts:
