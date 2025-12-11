@@ -14,9 +14,13 @@ const topics = [
     "GraphQL vs REST"
 ]
 
+/**
+ * Initializes the automated article generation system.
+ * Sets up a daily cron job (midnight) and triggers an immediate generation
+ * to ensure the database is populated on startup.
+ */
 export function startArticleJob() {
     // Run every day at midnight: "0 0 * * *"
-    // For demo/testing purposes, we can log that it started.
     console.log("Initializing Article Cron Job (Daily)...")
 
     cron.schedule("0 0 * * *", async () => {

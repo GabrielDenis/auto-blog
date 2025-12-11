@@ -1,5 +1,12 @@
 import { createNewArticle } from "../services/articleService.js"
 
+/**
+ * Handles the creation of a new article via the API.
+ * Triggered by the "Generate" button or external requests.
+ * 
+ * @param {import("express").Request} req 
+ * @param {import("express").Response} res 
+ */
 export async function createArticle(req, res) {
   try {
     const { topic } = req.body
@@ -12,11 +19,7 @@ export async function createArticle(req, res) {
 
     res.json(article)
   } catch (error) {
-    console.error("Generator Error full object:", error);
-    console.error("Generator Error Message:", error.message);
-    if (error.meta) console.error("Meta:", error.meta);
-    if (error.cause) console.error("Cause:", error.cause);
-    if (error.body) console.error("Error Body:", error.body);
+    console.error("Error generating article:", error.message);
     res.status(500).json({ error: "Error generating article" })
   }
 }

@@ -6,16 +6,23 @@ import "./App.css";
 import { useState } from "react";
 import { generateArticle } from "./api/client";
 
+/**
+ * Main Application Component.
+ * Manages the top-level layout, routing, and manual article generation trigger.
+ */
 function App() {
   const [isGenerating, setIsGenerating] = useState(false);
 
+  /**
+   * Triggers the backend AI generation process and refreshes the view.
+   */
   const handleGenerate = async () => {
     setIsGenerating(true);
     try {
       const topics = ["React", "Node.js", "AWS", "Docker", "AI"];
       const randomTopic = topics[Math.floor(Math.random() * topics.length)];
       await generateArticle(randomTopic);
-      // Reload page to show new article (simple approach)
+      // Hard refresh to update the list immediately
       window.location.reload();
     } catch (error) {
       console.error("Generation failed:", error);
