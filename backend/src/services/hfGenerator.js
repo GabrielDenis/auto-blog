@@ -16,17 +16,18 @@ export async function generateArticleHF(topic) {
     let content = ""
 
     try {
-        const res = await hf.textGeneration({
-            model: "google/flan-t5-large",
-            inputs: prompt,
-            parameters: {
-                max_new_tokens: 500,
-                temperature: 0.7
-            }
+        const res = await hf.chatCompletion({
+            model: "HuggingFaceH4/zephyr-7b-beta",
+            messages: [
+                { role: "system", content: "You are a helpful blog writer." },
+                { role: "user", content: prompt }
+            ],
+            max_tokens: 500,
+            temperature: 0.7
         })
-        const text = res.generated_text
+        const text = res.choices[0].message.content
         const lines = text.split("\n").filter(l => l.trim() !== "")
-        title = lines[0] ? lines[0].replace(/title[:]?/i, "").trim() : "Generated Article"
+        title = lines[0] ? lines[0].replace(/title[:]?/i, "").replace(/^#+\s*/, "").replace(/"/g, "").trim() : "Generated Article"
         content = lines.slice(1).join("\n").trim() || text
     } catch (err) {
         console.warn("HF Inference failed, using mock data. Error:", err.message)
