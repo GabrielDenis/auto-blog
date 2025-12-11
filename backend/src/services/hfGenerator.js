@@ -17,7 +17,7 @@ export async function generateArticleHF(topic) {
 
     try {
         const res = await hf.chatCompletion({
-            model: "HuggingFaceH4/zephyr-7b-beta",
+            model: "microsoft/Phi-3-mini-4k-instruct",
             messages: [
                 { role: "system", content: "You are a helpful blog writer." },
                 { role: "user", content: prompt }
